@@ -100,6 +100,8 @@ export function UserProfile({ userId, onUpdate }: UserProfileProps) {
 
 ## Scoping Instructions Effectively
 
+Path-specific instruction files in `.github/instructions` are applied automatically when the agent reads or edits a file matching their `applyTo` patterns.
+
 The `applyTo` field determines which files receive the instruction's guidance. It accepts either a **comma-separated string** or an **array of glob patterns** — both formats work:
 
 ```yaml

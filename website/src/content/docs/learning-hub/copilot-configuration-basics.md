@@ -643,7 +643,9 @@ The `/share html` command exports the current session — including conversation
 /share html
 ```
 
-The exported file contains everything needed to view the session without a network connection and can be shared with teammates or stored for later reference. This complements `/share` (which shares via URL) for cases where an offline or attached format is preferred.
+The exported file contains everything needed to view the session without a network connection and can be shared with teammates or stored for later reference. This complements `/share` (which shares via URL) for cases where an offline or attached format is preferred. Running `/share` with no arguments opens a full-screen action menu for sharing the current session.
+
+For one-off non-interactive runs (`-p` or piped stdin), pass `--trust-folder` to trust the working folder for that session. To turn off client telemetry uploads, start the CLI with `--disable-client-telemetry`.
 
 The `/chronicle` command opens an interactive timeline of everything the agent has done in the current session. It shows file changes, tool calls, and conversation turns in chronological order, letting you review the full arc of the session at a glance:
 
