@@ -173,6 +173,8 @@ With this in place, team members automatically get the `my-org-plugins` marketpl
 
 This is useful for internal marketplaces where you want every team member to always be running the latest published plugin versions.
 
+Marketplace entries can also point at a plugin that lives in a subdirectory of a Git repository using a `git-subdir` source, which is useful for monorepos that publish several plugins. Marketplace plugin descriptions can be long.
+
 ### Pinning a Marketplace to a Specific Commit
 
 To ensure reproducibility and prevent unintended updates, you can pin a marketplace to an exact commit SHA using the `sha` field in the source configuration:
@@ -210,6 +212,14 @@ Or from an interactive session:
 ```
 /plugin install database-data-management@awesome-copilot
 ```
+
+You can also install verified skills and plugins from a GitHub install link:
+
+```bash
+copilot plugin install "ghapp://air/install?..."
+```
+
+Plugins from repositories you trust install and update automatically before chat runs, and managed plugins pick up policy changes in existing sessions.
 
 > **Deprecation notice**: Installing plugins directly from a GitHub repository URL, raw URL, or local file path (e.g., `copilot plugin install github/awesome-copilot`) is deprecated and will be removed in a future release. Use marketplace-based installation instead.
 
@@ -342,6 +352,7 @@ This section collects behaviors that **changed or were renamed** in past release
 
 - **The `/plugins` command was removed.** Its functionality moved to dedicated commands: `/plugin` (plugin dashboard), `/mcp` (MCP servers), and `/skills` (skills), with `/subagents` for custom agents and `/instructions` for instructions. The plugins dashboard is now on by default for everyone; there is no supported way to opt back into the legacy `copilot plugins` command.
 - **`copilot plugins` lost its cross-kind flags.** The `--kind`, `--scope`, `--mcp`, and `--skill` flags were removed. `copilot plugins list` is now an alias of `copilot plugin list` and reports only plugins. Scripts using `copilot plugins install --skill [--scope project]` should switch to `copilot skill add [--project]`, and scripts reading `.plugins` from `copilot plugins list --json` should expect a flat array instead of the previous `{ plugins, errors }` object.
+- **The built-in `browser` plugin was renamed to `browser-use`.** Existing browser plugin preferences are kept after upgrading.
 - **The older top-level `marketplaces` setting was removed** in favor of `extraKnownMarketplaces` in `.github/copilot-settings.json` (or `config.json`).
 - **Installing plugins directly from a GitHub repository URL, raw URL, or local file path is deprecated** and will be removed in a future release — use marketplace-based installation (`copilot plugin install name@marketplace`) instead.
 

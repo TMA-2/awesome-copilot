@@ -108,6 +108,8 @@ tools: ['codebase', 'terminal', 'github']
 
 For MCP server tools, reference them by server name (e.g., `postgres`, `docker`). See [Understanding MCP Servers](../understanding-mcp-servers/) for details.
 
+**Agent-scoped hooks**: A custom agent can carry its own declarative hooks that run only while that agent is active. See [Automating with Hooks](../automating-with-hooks/#agent-scoped-hooks).
+
 ### Agent Instructions
 
 After the frontmatter, write Markdown instructions that define the agent's behavior. Structure these clearly:

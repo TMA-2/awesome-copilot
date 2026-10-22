@@ -431,6 +431,8 @@ CLI settings use **camelCase** naming. Key settings added in recent releases:
 | `stayInAutopilot` | Keep the CLI in autopilot mode after an autopilot task completes, instead of returning to interactive mode |
 | `defaultMode` | Startup mode for new interactive sessions (e.g., `interactive`, `autopilot`, `plan`) |
 | `defaultPermissionMode` | Default approval behaviour for new interactive sessions, independent from `defaultMode` |
+| `assistedApprovalInstructions` | Custom guidance for the Assisted Permissions judge when it decides whether to confirm an action |
+| `showReasoning` | Show model reasoning output; can be set or unset via `/config` and `/settings` |
 
 > **Note**: Older snake_case names (e.g., `include_gitignored`, `auto_updates_channel`) are still accepted for backward compatibility, but camelCase is now the preferred format.
 
@@ -643,7 +645,9 @@ The `/share html` command exports the current session — including conversation
 /share html
 ```
 
-The exported file contains everything needed to view the session without a network connection and can be shared with teammates or stored for later reference. This complements `/share` (which shares via URL) for cases where an offline or attached format is preferred.
+The exported file contains everything needed to view the session without a network connection and can be shared with teammates or stored for later reference. This complements `/share` (which shares via URL) for cases where an offline or attached format is preferred. Running `/share` with no arguments opens a full-screen action menu for sharing the current session.
+
+For one-off non-interactive runs (`-p` or piped stdin), pass `--trust-folder` to trust the working folder for that session. To turn off client telemetry uploads, start the CLI with `--disable-client-telemetry`.
 
 The `/chronicle` command opens an interactive timeline of everything the agent has done in the current session. It shows file changes, tool calls, and conversation turns in chronological order, letting you review the full arc of the session at a glance:
 
@@ -835,7 +839,7 @@ These flags apply only to the current invocation — your persisted sandbox pref
 
 **`worktreeBaseRef` setting**: Controls whether `/worktree`, `/worktree new`, and the `--worktree` startup flag create the new worktree from `HEAD` or from the remote default branch. All three default to `HEAD`. Set this in `/settings` if you want worktrees to branch from the remote default instead.
 
-**Sandbox network isolation**: On macOS and Linux, sandboxed commands cannot reach services running on your own machine, including a server the sandboxed command itself starts on `127.0.0.1`. This means test suites that bind a local port will fail inside the sandbox. Turn on **Allow local network** in `/sandbox` to restore access to localhost. On Linux, sandboxing also requires `slirp4netns`, `nsenter`, `iptables`, `ip6tables`, `iptables-restore`, and `ip6tables-restore` on `PATH` — install these if sandboxed commands start failing to launch. Additionally, Linux sandboxes restrict network egress to the configured HTTP(S) proxy when one is set; this proxy mode requires `slirp4netns`, `util-linux` 2.35+, `iptables`, and `/dev/net/tun` access.
+**Sandbox network access**: Sandboxed commands can reach localhost and private-network services by default, so test suites that bind a local port work inside the sandbox. Toggle **Allow local network** in `/sandbox` if you want stricter isolation. `/sandbox` can also keep sandboxing enabled for the current session without enabling it globally. On Linux, sandboxing also requires `slirp4netns`, `nsenter`, `iptables`, `ip6tables`, `iptables-restore`, and `ip6tables-restore` on `PATH` — install these if sandboxed commands start failing to launch. Additionally, Linux sandboxes restrict network egress to the configured HTTP(S) proxy when one is set; this proxy mode requires `slirp4netns`, `util-linux` 2.35+, `iptables`, and `/dev/net/tun` access.
 
 The `--attachment` flag (available in prompt mode, `-p`) lets you attach files — images or native documents — to the initial prompt in non-interactive mode:
 
@@ -945,7 +949,7 @@ This section collects settings and behaviors that **changed or were renamed** in
 - **`allowDevToolCaches` was renamed to `allowDevToolAccess`.** If your settings file still sets `allowDevToolCaches`, it is silently ignored — update it to `allowDevToolAccess`.
 - **Sandbox auth settings moved from `sandbox.gitAuth`/`sandbox.ghAuth` to `sandbox.auth.git`/`sandbox.auth.gh`.** There is no automatic migration; the old keys are silently ignored, and SDK requests that still send them are rejected as invalid.
 - **`worktreeBaseRef` now defaults to `HEAD` for all worktree-creation paths.** The `--worktree` startup flag previously defaulted to branching from the remote default branch instead.
-- **Sandbox network isolation on macOS/Linux blocks localhost by default.** Sandboxed commands — including a server the sandboxed command itself starts on `127.0.0.1` — can no longer reach services on your own machine. Turn on **Allow local network** in `/sandbox` if your test suite binds a local port. Linux sandboxing also requires `slirp4netns`, `nsenter`, `iptables`, `ip6tables`, `iptables-restore`, and `ip6tables-restore` on `PATH`.
+- **Sandbox local network access changed twice.** Earlier releases blocked localhost for sandboxed commands on macOS/Linux; the current default allows local network access again (v1.0.100), and **Allow local network** in `/sandbox` toggles it. Linux sandboxing also requires `slirp4netns`, `nsenter`, `iptables`, `ip6tables`, `iptables-restore`, and `ip6tables-restore` on `PATH`.
 - **`copilot plugins` lost its cross-kind flags.** The `--kind`, `--scope`, `--mcp`, and `--skill` flags were removed; `copilot plugins list` is now an alias of `copilot plugin list` and reports only plugins. Scripts using `copilot plugins install --skill [--scope project]` should switch to `copilot skill add [--project]`, and scripts reading `.plugins` from `copilot plugins list --json` should expect a flat array instead of the previous `{ plugins, errors }` object.
 - **Auto allow-all mode requires experimental mode.** The previous `AUTO_APPROVAL` environment variable approach was removed in favor of `/experimental on` (or `--experimental`) plus `/allow-all auto`.
 - **Ctrl+D no longer queues messages.** It now uses its default terminal behavior; use **Ctrl+Q** or **Ctrl+Enter** to queue a message instead.

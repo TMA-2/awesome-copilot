@@ -148,6 +148,12 @@ When multiple IDE extensions (or a mix of extensions and a `hooks.json` file) ea
 
 Hook event names can be written in **camelCase** (e.g., `preToolUse`) or **PascalCase** (e.g., `PreToolUse`). Both are accepted, making hook configuration files compatible across GitHub Copilot CLI, VS Code, and Claude Code without modification. Hooks also support Claude Code's nested `matcher`/`hooks` structure alongside the standard flat format.
 
+### Agent-Scoped Hooks
+
+Custom agents can declare their own hooks declaratively, so the hook only runs when that agent is active. Use agent-scoped hooks for guardrails that belong to one agent's role (for example, a security reviewer that blocks writes) without affecting every other session. See [Building Custom Agents](../building-custom-agents/) for agent files and the [Copilot CLI changelog](https://github.com/github/copilot-cli/blob/main/changelog.md) for the current declaration syntax.
+
+In autopilot mode, a `preToolUse` hook that returns an `"ask"` decision is denied rather than waiting on a permission dialog nobody is watching, so return explicit `allow` or `deny` decisions for unattended runs.
+
 ### Plugin Hooks Environment Variables
 
 When hooks are defined inside a **plugin**, the hook scripts receive two additional environment variables automatically:
