@@ -173,6 +173,8 @@ With this in place, team members automatically get the `my-org-plugins` marketpl
 
 This is useful for internal marketplaces where you want every team member to always be running the latest published plugin versions.
 
+Marketplace entries can also point at a plugin that lives in a subdirectory of a Git repository using a `git-subdir` source, which is useful for monorepos that publish several plugins. Marketplace plugin descriptions can be long.
+
 ### Pinning a Marketplace to a Specific Commit
 
 To ensure reproducibility and prevent unintended updates, you can pin a marketplace to an exact commit SHA using the `sha` field in the source configuration:
